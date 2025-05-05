@@ -1,0 +1,1 @@
+SELECT * INTO airports2 FROM airports; -- kopierar tabellen airports till airports2
