@@ -1,0 +1,1 @@
+SELECT * INTO Users2 FROM Users; -- kopierar tabellen Users till Users2
