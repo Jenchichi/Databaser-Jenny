@@ -102,6 +102,62 @@ VALUES (
 
 GO
 
+SELECT
+    CASE
+        WHEN SUBSTRING(RIGHT(ID, 2), 1, 1)  % 2 = 0 THEN 'Female'
+        ELSE 'Male'
+    END AS 'Gender',
+    CAST(AVG(FLOOR(DATEDIFF(DAY, CONVERT(date, LEFT(ID, 6)), GETDATE()) / 365.25)) AS INT) AS 'Average Age'
+FROM
+    NewUsers
+GROUP BY
+    CASE
+        WHEN SUBSTRING(RIGHT(ID, 2), 1, 1) % 2 = 0 THEN 'Female'
+        ELSE 'Male'
+    END;
+
+GO
+
+SELECT
+    p.Id AS Id,
+    p.ProductName AS Product,
+    s.CompanyName AS Supplier,
+    c.CategoryName AS Category
+FROM
+    company.products p
+JOIN
+    company.suppliers s ON p.SupplierId = s.Id
+JOIN
+    company.categories c ON p.CategoryId = c.Id;
+
+GO
+
+SELECT
+    Region,
+    COUNT(*) AS [Antal Anställda]
+FROM
+    company.employees
+GROUP BY
+    Region;
+
+GO
+
+SELECT
+    e.Id AS [Id],
+    CONCAT(e.title, ', ', e.FirstName, ' ', e.LastName) AS [Namn],
+    CASE
+        WHEN m.Id IS NULL THEN 'Nobody!'
+        ELSE CONCAT(m.title, ' ', m.FirstName, ' ', m.LastName)
+    END AS [Reports to]
+FROM
+    company.employees e
+LEFT JOIN
+    company.employees m ON e.ReportsTo = m.Id
+ORDER BY
+    e.Id;
+
+GO
+
 
 
 
