@@ -157,10 +157,3 @@ ORDER BY
     e.Id;
 
 GO
-
-
-
-
-
-
-
