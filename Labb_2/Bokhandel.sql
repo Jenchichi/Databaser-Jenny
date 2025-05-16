@@ -28,17 +28,17 @@ CREATE TABLE Böcker (
 
 INSERT INTO Böcker (ISBN13, Titel, Språk, Pris, Utgivningsdatum, FörfattareID)
 VALUES
-    ('978-91-27-13431-1', 'Pippi Långstrump', 'Svenska', 249.00, '1945-11-26', 1),
-    ('978-91-27-13432-8', 'Ronja Rövardotter', 'Svenska', 189.00, '1981-11-26', 1),
-    ('978-91-27-13433-5', 'Bröderna Lejonhjärta', 'Svenska', 199.00, '1973-11-26', 1),
-    ('978-91-27-13434-2', 'Alla vi barn i Bullerbyn', 'Svenska', 149.00, '1949-11-26', 1),
-    ('978-91-27-13435-9', 'Fyrmästarens dotter', 'Svenska', 259.00, '2005-11-26', 2),
-    ('978-91-27-13436-6', 'Havskatten', 'Svenska', 249.00, '2006-11-26', 2),
-    ('978-91-27-13437-3', 'Isprinsessan', 'Svenska', 139.00, '2004-11-26', 3),
-    ('978-91-27-13438-0', 'Tjänarinnans dotter', 'Svenska', 129.00, '2005-11-26', 3),
-    ('978-91-27-13439-7', 'Den som dödar draken', 'Svenska', 189.00, '2006-11-26', 4),
-    ('978-91-27-13440-3', 'En pilgrims död', 'Svenska', 199.00, '2013-11-26', 4);
--- inte körd än.
+    ('9789127134311', 'Pippi Långstrump', 'Svenska', 249.00, '1945-11-26', 1),
+    ('9789127134328', 'Ronja Rövardotter', 'Svenska', 189.00, '1981-11-26', 1),
+    ('9789127134335', 'Bröderna Lejonhjärta', 'Svenska', 199.00, '1973-11-26', 1),
+    ('9789127134342', 'Alla vi barn i Bullerbyn', 'Svenska', 149.00, '1949-11-26', 1),
+    ('9789127134359', 'Fyrmästarens dotter', 'Svenska', 259.00, '2005-11-26', 2),
+    ('9789127134366', 'Havskatten', 'Svenska', 249.00, '2006-11-26', 2),
+    ('9789127134373', 'Isprinsessan', 'Svenska', 139.00, '2004-11-26', 3),
+    ('9789127134380', 'Tjänarinnans dotter', 'Svenska', 129.00, '2005-11-26', 3),
+    ('9789127134397', 'Den som dödar draken', 'Svenska', 189.00, '2006-11-26', 4),
+    ('9789127134403', 'En pilgrims död', 'Svenska', 199.00, '2013-11-26', 4);
+
 -- SELECT * FROM Böcker;
 
 CREATE TABLE Butiker (
@@ -68,11 +68,36 @@ CREATE TABLE LagerSaldo (
 
 INSERT INTO LagerSaldo (ButikID, ISBN, Antal)
 VALUES
-    (1, '978-91-27-13431-1', 10),
-    (2, '978-91-27-13431-1', 10),
-    (3, '978-91-27-13431-1', 10),
-    
-
+    (1, '9789127134311', 5),
+    (1, '9789127134328', 8),
+    (1, '9789127134335', 3),
+    (1, '9789127134342', 12),
+    (1, '9789127134359', 9),
+    (1, '9789127134366', 6),
+    (1, '9789127134373', 11),
+    (1, '9789127134380', 7),
+    (1, '9789127134397', 4),
+    (1, '9789127134403', 10),
+    (2, '9789127134311', 9),
+    (2, '9789127134328', 5),
+    (2, '9789127134335', 11),
+    (2, '9789127134342', 6),
+    (2, '9789127134359', 8),
+    (2, '9789127134366', 4),
+    (2, '9789127134373', 10),
+    (2, '9789127134380', 3),
+    (2, '9789127134397', 12),
+    (2, '9789127134403', 7),
+    (3, '9789127134311', 11),
+    (3, '9789127134328', 9),
+    (3, '9789127134335', 5),
+    (3, '9789127134342', 10),
+    (3, '9789127134359', 6),
+    (3, '9789127134366', 8),
+    (3, '9789127134373', 4),
+    (3, '9789127134380', 12),
+    (3, '9789127134397', 3),
+    (3, '9789127134403', 9);
 
 -- SELECT * FROM LagerSaldo;
 
@@ -86,6 +111,15 @@ CREATE TABLE Kunder (
     Postnummer VARCHAR(10),
     Ort VARCHAR(50),
 );
+
+INSERT INTO Kunder (Förnamn, Efternamn, Epost, Telefonnummer, Adress, Postnummer, Ort)
+VALUES
+    ('Anna', 'Larsson', 'anna.larsson@example.com', '070-1234567', 'Storgatan 1', '12345', 'Stockholm'),
+    ('Petter', 'Hansson', 'petter.hansson@example.com', '070-9012345', 'Östra Hamngatan 4', '33333', 'Stockholm'),
+    ('Erik', 'Johansson', 'erik.johansson@example.com', '070-9876543', 'Drottninggatan 2', '11111', 'Göteborg'),
+    ('Sara', 'Lindström', 'sara.lindström@example.com', '070-1112222', 'Västra Hamngatan 5', '44444', 'Göteborg'),
+    ('Lena', 'Andersson', 'lena.andersson@example.com', '070-5551234', 'Kungsgatan 3', '22222', 'Malmö'),
+    ('Johan', 'Nilsson', 'johan.nilsson@example.com', '070-2223333', 'Norra Hamngatan 6', '55555', 'Malmö');
 
 -- SELECT * FROM Kunder;
 

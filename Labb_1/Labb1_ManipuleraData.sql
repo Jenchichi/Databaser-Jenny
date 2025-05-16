@@ -132,13 +132,19 @@ JOIN
 
 GO
 
-SELECT
-    Region,
-    COUNT(*) AS [Antal Anställda]
-FROM
-    company.employees
-GROUP BY
-    Region;
+SELECT 
+    r.RegionDescription AS Region,
+    COUNT(DISTINCT et.EmployeeId) AS [Antal Anställda]
+FROM 
+    company.territories t
+INNER JOIN 
+    company.regions r ON t.RegionId = r.Id
+INNER JOIN 
+    company.employee_territory et ON t.Id = et.TerritoryId
+GROUP BY 
+    r.RegionDescription
+ORDER BY
+    r.RegionDescription;
 
 GO
 
