@@ -39,6 +39,7 @@ VALUES
     ('9789127134397', 'Den som dödar draken', 'Svenska', 189.00, '2006-11-26', 4),
     ('9789127134403', 'En pilgrims död', 'Svenska', 199.00, '2013-11-26', 4);
 
+
 -- SELECT * FROM Böcker;
 
 CREATE TABLE Butiker (
@@ -134,19 +135,16 @@ CREATE TABLE Ordrar (
     CONSTRAINT FK_ButikID_ordrar FOREIGN KEY (ButikID) REFERENCES Butiker(ButikID)
 );
 
+INSERT INTO Ordrar (KundID, ButikID, Orderdatum, Totalbelopp, AntalBöcker)
+VALUES
+    (1, 1, '2024-12-15', 508.00, 2),
+    (2, 1, '2025-01-05', 189.00, 1),
+    (3, 2, '2025-02-10', 776.00, 4),
+    (4, 2, '2025-04-08', 1045.00, 5),
+    (5, 3, '2024-12-20', 1164.00, 6),
+    (6, 3, '2025-03-18', 647.00, 3);
+
 -- SELECT * FROM Ordrar;
-
-CREATE TABLE Förlag (
-    FörlagsID INT IDENTITY(1,1) PRIMARY KEY,
-    Förlagsnamn VARCHAR(100),
-    Adress VARCHAR(200),
-    Postnummer VARCHAR(10),
-    Ort VARCHAR(50),
-    Telefonnummer VARCHAR(20),
-    Epost VARCHAR(100)
-);
-
--- SELECT * FROM Förlag;
 
 CREATE TABLE Personal (
     PersonID INT IDENTITY(1,1) PRIMARY KEY,
@@ -159,6 +157,15 @@ CREATE TABLE Personal (
     Anställningsdatum DATE,
     CONSTRAINT FK_ButikID_Personal FOREIGN KEY (ButikID) REFERENCES Butiker(ButikID)
 );
+
+INSERT INTO Personal (Förnamn, Efternamn, Telefonnummer, Epost, ButikID, Roll, Anställningsdatum)
+VALUES
+    ('Rebecca', 'Olsson', '070-1234567', 'rebecca.olsson@example.com', 1, 'Butikschef', '2022-01-01'),
+    ('Magnus', 'Persson', '070-9012345', 'magnus.persson@example.com', 1, 'Säljare', '2022-06-01'),
+    ('Emma', 'Lundberg', '070-1112222', 'emma.lundberg@example.com', 2, 'Butikschef', '2021-03-01'),
+    ('Fredrik', 'Svensson', '070-5551234', 'fredrik.svensson@example.com', 2, 'Säljare', '2021-09-01'),
+    ('Sofia', 'Jönsson', '070-2223333', 'sofia.jonsson@example.com', 3, 'Butikschef', '2023-05-01'),
+    ('Andreas', 'Lindgren', '070-3334444', 'andreas.lindgren@example.com', 3, 'Säljare', '2023-11-01');
 
 -- SELECT * FROM Personal;
 
@@ -177,5 +184,151 @@ CREATE TABLE Försäljning (
     CONSTRAINT FK_BokID FOREIGN KEY (BokID) REFERENCES Böcker(ISBN13)
 );
 
+INSERT INTO Försäljning (PersonID, ButikID, OrderID, BokID, Försäljningsdatum, Antal, Totalbelopp)
+VALUES
+    (1, 1, 1, '9789127134311', '2024-12-15', 1, 249.00),
+    (1, 1, 1, '9789127134359', '2024-12-15', 1, 259.00),
+    (2, 1, 2, '9789127134328', '2025-01-05', 1, 189.00),
+    (3, 2, 3, '9789127134366', '2025-02-10', 1, 249.00),
+    (3, 2, 3, '9789127134373', '2025-02-10', 1, 139.00),
+    (3, 2, 3, '9789127134397', '2025-02-10', 1, 189.00),
+    (3, 2, 3, '9789127134403', '2025-02-10', 1, 199.00),
+    (4, 2, 4, '9789127134311', '2025-04-08', 1, 249.00),
+    (4, 2, 4, '9789127134359', '2025-04-08', 1, 259.00),
+    (4, 2, 4, '9789127134342', '2025-04-08', 1, 149.00),
+    (4, 2, 4, '9789127134335', '2025-04-08', 1, 199.00),
+    (4, 2, 4, '9789127134328', '2025-04-08', 1, 189.00),
+    (5, 3, 5, '9789127134359', '2024-12-20', 1, 259.00),
+    (5, 3, 5, '9789127134366', '2024-12-20', 1, 249.00),
+    (5, 3, 5, '9789127134373', '2024-12-20', 1, 139.00),
+    (5, 3, 5, '9789127134380', '2024-12-20', 1, 129.00),
+    (5, 3, 5, '9789127134397', '2024-12-20', 1, 189.00),
+    (5, 3, 5, '9789127134403', '2024-12-20', 1, 199.00),
+    (6, 3, 6, '9789127134366', '2025-03-18', 1, 249.00),
+    (6, 3, 6, '9789127134335', '2025-03-18', 1, 199.00),
+    (6, 3, 6, '9789127134403', '2025-03-18', 1, 199.00);
+
 -- SELECT * FROM Försäljning;
+
+GO
+
+CREATE VIEW TitlarPerFörfattare AS
+SELECT
+    F.Förnamn + ' ' + F.Efternamn AS Namn,
+    DATEDIFF(YEAR, F.Födelsedatum, GETDATE()) AS Ålder,
+    COUNT(DISTINCT B.ISBN13) AS Titlar,
+    SUM(B.Pris * LS.Antal) AS LagerVärde
+FROM
+    Författare F
+LEFT JOIN
+    Böcker B ON F.FörfattareID = B.FörfattareID
+LEFT JOIN
+    LagerSaldo LS ON B.ISBN13 = LS.ISBN
+GROUP BY
+    F.FörfattareID, F.Förnamn, F.Efternamn, F.Födelsedatum;
+
+GO
+
+-- SELECT top 1 * FROM TitlarPerFörfattare;
+-- SELECT * FROM TitlarPerFörfattare;
+
+CREATE PROCEDURE FlyttaBok
+    @FromButikID INT,
+    @ToButikID INT,
+    @ISBN CHAR(13),
+    @Antal INT = 1
+AS
+BEGIN
+    -- Kontrollera att butikerna existerar
+    IF NOT EXISTS (SELECT * FROM Butiker WHERE ButikID = @FromButikID)
+        RAISERROR ('Butiken som skall flyttas från finns inte.', 16, 1);
+    IF NOT EXISTS (SELECT * FROM Butiker WHERE ButikID = @ToButikID)
+        RAISERROR ('Butiken som skall flyttas till finns inte', 16, 1);
+    
+    -- Kontrollera att boken existerar
+    IF NOT EXISTS (SELECT * FROM Böcker WHERE ISBN13 = @ISBN)
+        RAISERROR ('Boken som skall flyttas finns inte i systemet', 16, 1);
+        
+    -- Kontrollera att det finns tillräckligt många böcker i lager
+    IF (SELECT Antal FROM LagerSaldo WHERE ButikID = @FromButikID AND ISBN = @ISBN) < @Antal
+    BEGIN
+        RAISERROR ('Det finns inte tillräckligt många exemplar av boken i butiken.', 16, 1);
+    END
+    ELSE
+    BEGIN
+        -- Uppdatera lagersaldot
+        UPDATE LagerSaldo
+        SET Antal = Antal - @Antal
+        WHERE ButikID = @FromButikID AND ISBN = @ISBN;
+
+        IF EXISTS (SELECT * FROM LagerSaldo WHERE ButikID = @ToButikID AND ISBN = @ISBN)
+        BEGIN
+            UPDATE LagerSaldo
+            SET Antal = Antal + @Antal
+            WHERE ButikID = @ToButikID AND ISBN = @ISBN;
+        END
+        ELSE
+        BEGIN
+            INSERT INTO LagerSaldo (ButikID, ISBN, Antal)
+            VALUES (@ToButikID, @ISBN, @Antal);
+        END
+    END
+END;
+
+GO
+
+-- SELECT * FROM LagerSaldo;
+
+-- EXEC FlyttaBok Från butik 2, Till Butik 3, ISBN='9789127134397' (Den som dödar draken), Antal=1
+-- EXEC FlyttaBok @FromButikID = 3, @ToButikID = 2, @ISBN = '9789127134397', @Antal = 10;
+-- SELECT * FROM LagerSaldo WHERE ISBN = '9789127134397';
+
+CREATE TABLE FörfattareBöcker (
+    FörfattareID INT,
+    BokID CHAR(13),
+    PRIMARY KEY (FörfattareID, BokID),
+    FOREIGN KEY (FörfattareID) REFERENCES Författare(FörfattareID),
+    FOREIGN KEY (BokID) REFERENCES Böcker(ISBN13)
+);
+
+INSERT INTO FörfattareBöcker (FörfattareID, BokID)
+VALUES
+    (2, '9789127134359'),
+    (3, '9789127134359'),
+    (4, '9789127134403'),
+    (1, '9789127134403'),
+    (1, '9789127134328'),
+    (2, '9789127134328');
+
+-- SELECT * FROM FörfattareBöcker;
+
+SELECT F.Förnamn, F.Efternamn, B.Titel
+FROM Författare F
+JOIN FörfattareBöcker FB ON F.FörfattareID = FB.FörfattareID
+JOIN Böcker B ON FB.BokID = B.ISBN13;
+
+SELECT B.Titel, STRING_AGG(F.Förnamn + ' ' + F.Efternamn, ', ') AS Författare
+FROM Böcker B
+JOIN FörfattareBöcker FB ON B.ISBN13 = FB.BokID
+JOIN Författare F ON FB.FörfattareID = F.FörfattareID
+GROUP BY B.Titel;
+
+GO
+
+CREATE VIEW TopKunder AS
+SELECT TOP 10
+    K.Förnamn,
+    K.Efternamn,
+    COUNT(O.OrderID) AS AntalOrdrar,
+    SUM(F.Totalbelopp) AS Totalförsäljningsbelopp
+FROM
+    Kunder K
+JOIN Ordrar O ON K.KundID = O.KundID
+JOIN Försäljning F ON O.OrderID = F.OrderID
+GROUP BY
+    K.Förnamn,
+    K.Efternamn
+ORDER BY
+    Totalförsäljningsbelopp DESC;
+
 
