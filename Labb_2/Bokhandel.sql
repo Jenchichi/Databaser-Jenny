@@ -314,6 +314,10 @@ JOIN Författare F ON FB.FörfattareID = F.FörfattareID
 GROUP BY B.Titel;
 
 GO
+-- Denna vy hjälper bokhandeln att identifiera sina mest lönsamma kunder,
+-- vilket gör det möjligt att rikta marknadsföringsinsatser mer effektivt.
+-- Genom att analysera kundernas köpbeteende och köpmönster kan bokhandeln 
+-- fatta bättre beslut kring kampanjer, lojalitetsprogram och kundrelationer.
 
 CREATE VIEW TopKunder AS
 SELECT TOP 10
@@ -331,4 +335,7 @@ GROUP BY
 ORDER BY
     Totalförsäljningsbelopp DESC;
 
+GO
 
+-- SELECT * FROM TopKunder;
+-- SELECT TOP 3 * FROM TopKunder;
