@@ -280,7 +280,7 @@ GO
 -- SELECT * FROM LagerSaldo;
 
 -- EXEC FlyttaBok Från butik 2, Till Butik 3, ISBN='9789127134397' (Den som dödar draken), Antal=1
--- EXEC FlyttaBok @FromButikID = 3, @ToButikID = 2, @ISBN = '9789127134397', @Antal = 10;
+-- EXEC FlyttaBok @FromButikID = 3, @ToButikID = 2, @ISBN = '9789127134397', @Antal = 1;
 -- SELECT * FROM LagerSaldo WHERE ISBN = '9789127134397';
 
 CREATE TABLE FörfattareBöcker (
@@ -339,3 +339,10 @@ GO
 
 -- SELECT * FROM TopKunder;
 -- SELECT TOP 3 * FROM TopKunder;
+
+-- Backup av databasen
+BACKUP DATABASE Bokhandel
+TO DISK = N'C:\Programmering\IT_hogskolan\Databaser-Jenny\Labb_2\JennySkoglund.bak'
+WITH FORMAT,
+    NAME = 'BokhandelBackup',
+    DESCRIPTION = 'Full Backup of Bokhandel';
