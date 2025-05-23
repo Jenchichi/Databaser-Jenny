@@ -7,3 +7,7 @@ FROM
     GameOfThrones
 ORDER BY
     Season, EpisodeInSeason;
+
+SELECT symbol, [name]
+FROM elements
+WHERE left([name], len(symbol)) = symbol;

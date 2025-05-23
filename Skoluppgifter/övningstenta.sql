@@ -81,7 +81,7 @@ CREATE TABLE course (
     credits int
 );
 -- 1NF (Första normalformen):
--- ✅ Alla attribut innehåller atomära (odelabara) värden
+-- ✅ Alla attribut innehåller ett ensamt attribut (värde)
 -- ✅ Det finns en primärnyckel (courseID)
 -- ✅ Inga upprepade grupper av kolumner
 
